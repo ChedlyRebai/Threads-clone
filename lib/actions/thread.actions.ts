@@ -13,39 +13,43 @@ type ThreadParams = {
   path: string;
 };
 
-export async function createThread({
-  text,
-  accountId,
-  communityId,
-  path,
-}: ThreadParams) {
-  try {
-    connectToDB(); // Make sure you have a function for connecting to your database
+export async function createThread({ text, accountId, communityId, path }: ThreadParams
+  ) {
+    try {
+      connectToDB();
+  
+      const communityIdObject = await Community.findOne(
+        { id: communityId },
+        { _id: 1 }
+      );
 
-    // Create a new thread
-    const newThread = new Thread({
-      author: accountId,
-      text: text,
-      community: communityId,
-    });
-    
-    // Save the new thread
-    await newThread.save();
-    
-    // Update the user with the new thread's ID
-    const user = await User.findOneAndUpdate(
-      { _id: accountId }, 
-      { $push: { threads: newThread._id } }
-    );
-    
-    console.log(user);
-    
-    revalidatePath(path);
-  } catch (error) {
+      console.log(communityIdObject);
+      
+      const createdThread = await Thread.create({
+        text,
+        author: accountId,
+        community: communityIdObject, // Assign communityId if provided, or leave it null for personal account
+      });
+  
+      // Update User model
+      await User.findByIdAndUpdate(accountId, {
+        $push: { threads: createdThread._id },
+      });
+  
+      if (communityIdObject) {
+        // Update Community model
+        await Community.findByIdAndUpdate(communityIdObject, {
+          $push: { threads: createdThread._id },
+        });
+        console.log(communityIdObject);
+        
+      }
+  
+      revalidatePath(path);
+    } catch (error: any) {
     console.error(error);
-    throw error; // Rethrow the error for higher-level handling
+    }
   }
-}
 
 export async function fetchPosts(pageNumber = 1, pageSize = 20) {
   connectToDB();
@@ -146,7 +150,6 @@ export async function addCommentToThread(
     console.error(error);
   }
 }
-
 
 export async function fetchPostsByUserId(userId: string) {
   connectToDB()

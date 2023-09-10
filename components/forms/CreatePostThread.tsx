@@ -25,7 +25,10 @@ import { useUploadThing } from "@/lib/uploadthing";
 import { updateUser } from "@/lib/actions/user.actions";
 import { ThreadValidation } from "@/lib/validations/thread";
 import "@/globals.css";
+
+import { useOrganization } from "@clerk/clerk-react";
 import { createThread } from "@/lib/actions/thread.actions";
+import { Organization } from "@clerk/nextjs/server";
 type Props = {
   user: {
     id: string;
@@ -44,6 +47,7 @@ const CreatePostThread = ({ userId }: { userId: string }) => {
   const [files, setFiles] = useState<File[]>([]);
   const { startUpload } = useUploadThing("media");
 
+  const {organization} = useOrganization()
   const form = useForm({
     resolver: zodResolver(ThreadValidation),
     defaultValues: {
@@ -53,10 +57,13 @@ const CreatePostThread = ({ userId }: { userId: string }) => {
   });
 
   const onSubmit = async (values: z.infer<typeof ThreadValidation>) => {
+
+    console.log(organization)
     createThread({
       text: values.thread,
       accountId: values.accountId,
-      communityId: null,
+    //  communityId: null,
+      communityId:  organization ? organization.id : null,
       path: pathname,
     })
       .then((res) => {
