@@ -2,6 +2,7 @@ import { fetchPostsByUserId } from "@/lib/actions/thread.actions";
 import { redirect } from "next/navigation";
 import ThreadCard from "../cards/ThreadCard";
 import { currentUser } from "@clerk/nextjs";
+import { fetchCommunityPosts } from "@/lib/actions/community.action";
 
 type ThreadsTabProps = {
 currentUserId: string;
@@ -13,8 +14,13 @@ accountType: string;
 
 const ThreadsTab =async ({currentUserId,accountId,accountType}:ThreadsTabProps) => {
 
-    let result = await fetchPostsByUserId(accountId)
-
+    let result:any;
+    if(accountType === "User"){
+        result = await fetchPostsByUserId(accountId)
+    }else{
+        result = await fetchCommunityPosts(accountId)
+    }
+    
     const CurrentUser = await currentUser()
     if(!result) {
         redirect('/')
