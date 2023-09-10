@@ -1,4 +1,4 @@
-import OrganizationSwitcherPage from "@/app/organization-switcher/[[...organization-switcher]]/page";
+
 import AccountProfile from "@/components/forms/AccountProfile";
 import { UserButton, currentUser } from "@clerk/nextjs";
 import { useRouter } from "next/router";
