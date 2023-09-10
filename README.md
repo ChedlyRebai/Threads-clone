@@ -1,9 +1,8 @@
 [Visit our website](https://threads-clone-xzb5.vercel.app/)
 ![Screenshot](screenshot.png)
+<figure class="video_container">
 <iframe width="425" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://www.openstreetmap.org/export/embed.html?bbox=6.047544479370118%2C46.23053702499607%2C6.061706542968751%2C46.23821801159735&amp;layer=mapnik" style="border: 1px solid black"></iframe>
-<br/><small><a href="https://threads-clone-xzb5.vercel.app">View Larger Map</a></small>
-
-
+</figure>
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
